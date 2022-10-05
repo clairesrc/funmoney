@@ -44,23 +44,17 @@ func main() {
 
 	// Add sample record
 	log.Printf("Adding sample record")
-	if _, err = transactions.Create(transactionRecord{
+	insertedID, err := transactions.Create(transactionRecord{
 		Value:    100,
 		Type:  "credit",
 		Comment: "Sample comment",
 		Timestamp: fmt.Sprint((time.Now().Unix())),
-	}); err!= nil {
+	})
+	if err!= nil {
 		panic(fmt.Errorf("Can't add sample record:\n%w", err))
 	}
 
-	// Add firstRun to app collection
-	log.Printf("Adding firstRun record")
-	_, err = store.insertOne(APP_COLLECTION_NAME, bson.D{
-		{Key: "firstRun", Value: true},
-	}) 
-	if err != nil {
-		panic(fmt.Errorf("Can't add firstRun record:\n%w", err))
-	}
+	fmt.Println(insertedID)
 
 
 	records, err := transactions.Read(bson.D{})
@@ -68,5 +62,11 @@ func main() {
 		panic("Can't get initial records")
 	}
 	fmt.Println(records)
+
+	sum, err := transactions.Sum(bson.D{{"value", "$value"}})
+	if err != nil {
+		panic(fmt.Errorf("Can't get sum: %w", err))
+	}
+	fmt.Println(sum)
 
 }

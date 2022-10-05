@@ -7,8 +7,8 @@ import (
 
 type storeClient interface {
 	close() error
-	findOne(collectionName string, query bson.D) (map[string]interface{}, error)
-	find(collectionName string, query bson.D) ([]interface{}, error)
+	aggregate(collectionName string, query bson.D) ([]bson.M, error)
+	find(collectionName string, query bson.D) (*mongo.Cursor, error)
 	insertOne(collectionName string, document interface{}) (*mongo.InsertOneResult, error)
 	insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error)
 	update(collectionName string, update, filter bson.D) (*mongo.UpdateResult, error)

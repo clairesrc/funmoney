@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type transactions struct {
@@ -11,11 +13,11 @@ type transactions struct {
 }
 
 type transactionRecord struct {
-	ID        string `bson:"_id",omitempty`
-    Comment    string `bson:"comment",omitempty`
-    Type    string `bson:"type",omitempty`
-    Timestamp string `bson:"timestamp",omitempty`
-	Value float64 `bson:"value",omitempty`
+    ID      *primitive.ObjectID `json:"ID" bson:"_id,omitempty"`
+    Comment    string `bson:"comment,omitempty"`
+    Type    string `bson:"type,omitempty"`
+    Timestamp string `bson:"timestamp,omitempty"`
+	Value float64 `bson:"value,omitempty"`
 }
 
 func newTransactionsModel(client storeClient) *transactions {
@@ -34,16 +36,31 @@ func (t *transactions) Create(transaction transactionRecord) (interface{}, error
 }
 
 func (t *transactions) Read(query bson.D) ([]transactionRecord, error) {
-	result, err := t.client.findOne(TRANSACTIONS_COLLECTION_NAME, query)
+	var records []transactionRecord
+
+	result, err := t.client.find(TRANSACTIONS_COLLECTION_NAME, query)
     if err!= nil {
         return nil, fmt.Errorf("Can't find transaction record:\n%w", err)
     }
 
-	return []transactionRecord{
-		{
-            ID:        result["_id"].(string),
-            Comment:    result["comment"].(string),
-            Timestamp: result["timestamp"].(string),
-            Value:      result["value"].(float64),
-	}}, nil
+	for result.Next(context.TODO()) {
+		record := transactionRecord{}
+		err := result.Decode(&record)
+		if err != nil {
+			return nil, fmt.Errorf("Can't decode transaction record: %w", err)
+		}
+		records = append(records, record)
+	}
+
+	return records, nil
+}
+
+func (t *transactions) Sum(query bson.D) ([]bson.M, error) {
+
+	result, err := t.client.aggregate(TRANSACTIONS_COLLECTION_NAME, query)
+    if err!= nil {
+        return nil, fmt.Errorf("Can't find transaction record:\n%w", err)
+    }
+
+	return result, nil
 }

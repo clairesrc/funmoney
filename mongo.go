@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -43,35 +42,7 @@ func (c *mongoClient) close() error {
 }
 
 
-func (c mongoClient) findOne(collectionName string, query bson.D) (map[string]interface{}, error) {
-	db := c.client.Database(c.database)
-	collection := db.Collection(collectionName)
-	var result bson.M
-
-	err := collection.FindOne(context.TODO(), query).Decode(&result)
-	if err == mongo.ErrNoDocuments {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, fmt.Errorf("Error running findOne for query %s:\n%w\n", query, err)
-	}
-
-	jsonData, err := json.MarshalIndent(result, "", "    ")
-	if err != nil {
-		return nil, fmt.Errorf("Error marshalling result from findOne query %s:\n%w\n", query, err)
-	}
-	
-	// unmarshal jsonData
-	var data map[string]interface{}
-    err = json.Unmarshal(jsonData, &data)
-    if err!= nil {
-		return nil, fmt.Errorf("Error unmarshalling result from findOne query %s:\n%w\n", query, err)
-    }
-
-	return data, nil
-}
-
-func (c mongoClient) insertOne(collectionName string, document interface{}) (*mongo.InsertOneResult, error) {
+func (c *mongoClient) insertOne(collectionName string, document interface{}) (*mongo.InsertOneResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
     result, err := collection.InsertOne(context.TODO(), document)
@@ -82,7 +53,7 @@ func (c mongoClient) insertOne(collectionName string, document interface{}) (*mo
 	return result, nil
 }
 
-func (c mongoClient) insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error) {
+func (c *mongoClient) insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
     result, err := collection.InsertMany(context.TODO(), documents)
@@ -93,7 +64,7 @@ func (c mongoClient) insert(collectionName string, documents []interface{}) (*mo
 	return result, nil
 }
 
-func (c mongoClient) update(collectionName string, update, filter bson.D) (*mongo.UpdateResult, error) {
+func (c *mongoClient) update(collectionName string, update, filter bson.D) (*mongo.UpdateResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
     result, err := collection.UpdateOne(context.TODO(), filter, update)
@@ -104,7 +75,7 @@ func (c mongoClient) update(collectionName string, update, filter bson.D) (*mong
 	return result, nil
 }
 
-func (c mongoClient) delete(collectionName string, filter bson.D) (*mongo.DeleteResult, error) {
+func (c *mongoClient) delete(collectionName string, filter bson.D) (*mongo.DeleteResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
 	result, err := collection.DeleteOne(context.TODO(), filter)
@@ -114,12 +85,12 @@ func (c mongoClient) delete(collectionName string, filter bson.D) (*mongo.Delete
 
 	return result, nil
 }
-func (c mongoClient) find(collectionName string, query bson.D) ([]interface{}, error) {
+
+func (c *mongoClient) find(collectionName string, query bson.D) (*mongo.Cursor, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
-	var resultRecords []interface{}
 
-	result, err := collection.Find(context.TODO(), query)
+	cursor, err := collection.Find(context.TODO(), query)
 	if err == mongo.ErrNoDocuments {
 		return nil, nil
 	}
@@ -127,7 +98,26 @@ func (c mongoClient) find(collectionName string, query bson.D) ([]interface{}, e
 		return nil, fmt.Errorf("Error running find for query %s:\n%w\n", query, err)
 	}
 
-	_ = result.All(context.TODO(), &resultRecords)
+	return cursor, nil
+}
 
-	return resultRecords, nil
+func (c *mongoClient) aggregate(collectionName string, query bson.D) ([]bson.M, error) {
+	db := c.client.Database(c.database)
+	collection := db.Collection(collectionName)
+	matchStage := bson.D{{"$project", query}}
+	groupStage := bson.D{{"$group", bson.D{
+		{"_id", ""},
+        {"value", bson.D{{"$sum", "$value"}}},
+        }}}
+
+	result, err := collection.Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return nil, fmt.Errorf("Error running aggregate for pipeline %s:\n%w\n", query, err)
+	}
+
+	var sum []bson.M
+	if err = result.All(context.TODO(), &sum); err != nil {
+		panic(err)
+	}
+	return sum, nil
 }
