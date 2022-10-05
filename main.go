@@ -40,41 +40,33 @@ func main() {
 		_ = store.close()
 	}()
 
-	var record map[string]interface{}
+	transactions := newTransactionsModel(store)
 
-	// Check if first run
-	record, err = store.findOne(APP_COLLECTION_NAME, bson.D{})
-	if err!= nil {
-        panic(fmt.Errorf("Can't check for app record:\n%w", err))
-    }
-	if len(record) == 0 {
-		// Add sample record
-		log.Printf("Adding sample record")
-        if _, err := store.insertOne(TRANSACTIONS_COLLECTION_NAME, bson.D{
-            {Key: "comment", Value: "sample"},
-			{Key: "type", Value: "credit"},
-			{Key: "value", Value: 100},
-			{Key: "timestamp", Value: time.Now().Unix()},
-		}); err!= nil {
-			panic(fmt.Errorf("Can't add sample record:\n%w", err))
-		}
-		record, err = store.findOne(TRANSACTIONS_COLLECTION_NAME, bson.D{
-			{Key: "comment", Value: "sample"},
-		})
-		if err != nil {
-			panic("Can't get sample record after inserting")
-		}
+	// Add sample record
+	log.Printf("Adding sample record")
+	if _, err = transactions.Create(transactionRecord{
+		Value:    100,
+		Type:  "credit",
+		Comment: "Sample comment",
+		Timestamp: fmt.Sprint((time.Now().Unix())),
+	}); err!= nil {
+		panic(fmt.Errorf("Can't add sample record:\n%w", err))
+	}
 
-		// Add firstRun to app collection
-		log.Printf("Adding firstRun record")
-        _, err := store.insertOne(APP_COLLECTION_NAME, bson.D{
-            {Key: "firstRun", Value: true},
-		}) 
-		if err != nil {
-			panic(fmt.Errorf("Can't add firstRun record:\n%w", err))
-		}
-    }
+	// Add firstRun to app collection
+	log.Printf("Adding firstRun record")
+	_, err = store.insertOne(APP_COLLECTION_NAME, bson.D{
+		{Key: "firstRun", Value: true},
+	}) 
+	if err != nil {
+		panic(fmt.Errorf("Can't add firstRun record:\n%w", err))
+	}
 
-	fmt.Println(record)
+
+	records, err := transactions.Read(bson.D{})
+	if err != nil {
+		panic("Can't get initial records")
+	}
+	fmt.Println(records)
 
 }

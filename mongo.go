@@ -82,7 +82,7 @@ func (c mongoClient) insertOne(collectionName string, document interface{}) (*mo
 	return result, nil
 }
 
-func (c mongoClient) insertMany(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error) {
+func (c mongoClient) insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
     result, err := collection.InsertMany(context.TODO(), documents)
@@ -113,4 +113,21 @@ func (c mongoClient) delete(collectionName string, filter bson.D) (*mongo.Delete
 	}
 
 	return result, nil
+}
+func (c mongoClient) find(collectionName string, query bson.D) ([]interface{}, error) {
+	db := c.client.Database(c.database)
+	collection := db.Collection(collectionName)
+	var resultRecords []interface{}
+
+	result, err := collection.Find(context.TODO(), query)
+	if err == mongo.ErrNoDocuments {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("Error running find for query %s:\n%w\n", query, err)
+	}
+
+	_ = result.All(context.TODO(), &resultRecords)
+
+	return resultRecords, nil
 }

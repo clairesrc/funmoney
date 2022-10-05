@@ -6,10 +6,11 @@ import (
 )
 
 type storeClient interface {
-	close()
+	close() error
 	findOne(collectionName string, query bson.D) (map[string]interface{}, error)
+	find(collectionName string, query bson.D) ([]interface{}, error)
 	insertOne(collectionName string, document interface{}) (*mongo.InsertOneResult, error)
-	insertMany(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error)
+	insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error)
 	update(collectionName string, update, filter bson.D) (*mongo.UpdateResult, error)
 	delete(collectionName string, filter bson.D) (*mongo.DeleteResult, error)
 }
