@@ -1,18 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 	"os"
-	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-const DBNAME = "funmoney"
-const TRANSACTIONS_COLLECTION_NAME="transactions"
-const APP_COLLECTION_NAME="app"
 
 func main() {
 	var cap = os.Getenv("CAP")
@@ -40,33 +36,21 @@ func main() {
 		_ = store.close()
 	}()
 
-	transactions := newTransactionsModel(store)
+	transactionsClient := newTransactionsModel(store)
 
-	// Add sample record
-	log.Printf("Adding sample record")
-	insertedID, err := transactions.Create(transactionRecord{
-		Value:    100,
-		Type:  "credit",
-		Comment: "Sample comment",
-		Timestamp: fmt.Sprint((time.Now().Unix())),
+	r := gin.Default()
+	r.GET("/transactions", func(c *gin.Context) {
+		transactions, err := transactionsClient.Read(bson.D{})
+		if err!= nil {
+			reportError(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"transactions": transactions})
 	})
-	if err!= nil {
-		panic(fmt.Errorf("Can't add sample record:\n%w", err))
-	}
-
-	fmt.Println(insertedID)
-
-
-	records, err := transactions.Read(bson.D{})
-	if err != nil {
-		panic("Can't get initial records")
-	}
-	fmt.Println(records)
-
-	sum, err := transactions.Sum(bson.D{{"value", "$value"}})
-	if err != nil {
-		panic(fmt.Errorf("Can't get sum: %w", err))
-	}
-	fmt.Println(sum)
-
+	_ = r.Run()
 }
+
+func reportError(c *gin.Context, err error) {
+	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+} 

@@ -25,6 +25,8 @@ services:
     depends_on:
       - mongo
     container_name: funmoney
+    ports:
+      - 8082:8080
     image: funmoney
     environment:
       - CURRENCY=${CURRENCY}

@@ -5,4 +5,5 @@ WORKDIR /funmoney
 COPY * /funmoney/
 RUN go get .
 RUN go build .
+EXPOSE 8080
 CMD ["./funmoney"]

@@ -18,3 +18,5 @@
 - push notifications for getting close to limit
 
 - periodical rollover
+
+- tests lol. shouldnt be too bad but someone has to do it
