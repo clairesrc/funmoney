@@ -1,16 +1,22 @@
 const HOSTNAME = "192.168.193.208:8082"
 
-const renderTransaction = (transactionsHTML, transaction) => {
-    return `${transactionsHTML}<div class="transaction">${transaction.Value}</div>`
-}
+const balanceRenderer = balance => `
+    <p>
+        Current balance: <span class="balance-figure">${balance}</span>
+    </p>`
+
+const transactionRenderer = transactions => transactions.reduce((transactionsHTML, {Value}) => `${transactionsHTML}<div class="transaction">${Value}</div>`, '')
 
 const paint = (transactions, transactionsHtml) => {
     document.getElementById(transactions).innerHTML = transactionsHtml
 }
 
-fetch(`http://${HOSTNAME}/transactions`)
-    .then(req => req.json())
-    .then(res => paint(
-        "transactions",
-        res.transactions.reduce(renderTransaction, '')
-    ))
+const addSection = (name, renderer) => fetch(`http://${HOSTNAME}/${name}`)
+.then(req => req.json())
+.then(res => paint(
+    name,
+    renderer(res[name]))
+)
+
+addSection("transactions", transactionRenderer)
+addSection("balance", balanceRenderer)

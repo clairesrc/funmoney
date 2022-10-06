@@ -104,10 +104,10 @@ func (c *mongoClient) find(collectionName string, query bson.D) (*mongo.Cursor, 
 func (c *mongoClient) aggregate(collectionName string, query bson.D) ([]bson.M, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
-	matchStage := bson.D{{"$project", query}}
-	groupStage := bson.D{{"$group", bson.D{
-		{"_id", ""},
-        {"value", bson.D{{"$sum", "$value"}}},
+	matchStage := bson.D{{Key: "$project", Value: query}}
+	groupStage := bson.D{{Key: "$group", Value: bson.D{
+		{Key: "_id", Value: ""},
+        {Key: "value", Value: bson.D{{Key: "$sum", Value: "$value"}}},
         }}}
 
 	result, err := collection.Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage})
@@ -119,5 +119,6 @@ func (c *mongoClient) aggregate(collectionName string, query bson.D) ([]bson.M, 
 	if err = result.All(context.TODO(), &sum); err != nil {
 		panic(err)
 	}
+
 	return sum, nil
 }

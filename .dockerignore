@@ -2,4 +2,8 @@
 .gitignore
 docker-compose.yml
 Dockerfile
-.run.sh
+dev.sh
+build.sh
+tail-logs.sh
+watch-build.sh
+frontend/

@@ -31,3 +31,11 @@ services:
     environment:
       - CURRENCY=${CURRENCY}
       - CAP=${CAP}
+
+  funmoney-frontend:
+    depends_on:
+      - mongo
+    container_name: funmoney-frontend
+    ports:
+      - 8002:8000
+    image: funmoney-frontend
