@@ -46,7 +46,7 @@ func main() {
 	r.Use(cors.New(corsconfig))
 
 	r.GET("/transactions", func(c *gin.Context) {
-		transactions, err := transactionsClient.Read(bson.D{})
+		transactions, err := transactionsClient.Read(bson.D{}, 12)
 		if err!= nil {
 			reportError(c, err)
 			return

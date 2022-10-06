@@ -24,7 +24,9 @@ const transactionRenderer = transactions => transactions ? transactions.reduce((
 const renderSection = (name, title , sectionContent) => `
     <section id="${name}">
         <h1>${title}</h1>
-        ${sectionContent}
+        <div class="content">
+            ${sectionContent}
+        </div>
     </section>
     `
 
@@ -50,7 +52,7 @@ const main = appState => Promise.all(
 ).then(data => renderApp(data, appState.sections))
 .catch(console.error)
 
-addSection("Balance", "balance", balanceRenderer)
-addSection("Transactions", "transactions", transactionRenderer)
+addSection("My Balance", "balance", balanceRenderer)
+addSection("Recent Transactions", "transactions", transactionRenderer)
 
 main(appState)

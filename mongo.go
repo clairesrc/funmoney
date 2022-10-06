@@ -86,11 +86,11 @@ func (c *mongoClient) delete(collectionName string, filter bson.D) (*mongo.Delet
 	return result, nil
 }
 
-func (c *mongoClient) find(collectionName string, query bson.D) (*mongo.Cursor, error) {
+func (c *mongoClient) find(collectionName string, query bson.D, opts *options.FindOptions) (*mongo.Cursor, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
 
-	cursor, err := collection.Find(context.TODO(), query)
+	cursor, err := collection.Find(context.TODO(), query, opts)
 	if err == mongo.ErrNoDocuments {
 		return nil, nil
 	}

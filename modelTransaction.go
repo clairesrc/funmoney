@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type transactions struct {
@@ -35,10 +36,13 @@ func (t *transactions) Create(transaction transactionRecord) (interface{}, error
 	return result.InsertedID, nil
 }
 
-func (t *transactions) Read(query bson.D) ([]transactionRecord, error) {
+func (t *transactions) Read(query bson.D, limit int) ([]transactionRecord, error) {
 	var records []transactionRecord
-
-	result, err := t.client.find(TRANSACTIONS_COLLECTION_NAME, query)
+	opts := &options.FindOptions{}
+	if limit > 0 {
+		opts = options.Find().SetLimit(int64(limit))
+	}
+	result, err := t.client.find(TRANSACTIONS_COLLECTION_NAME, query, opts)
     if err!= nil {
         return nil, fmt.Errorf("Can't find transaction record:\n%w", err)
     }

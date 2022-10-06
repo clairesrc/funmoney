@@ -1,0 +1,17 @@
+#transactions .content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    align-items: stretch;
+}
+.transaction {
+    border: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    align-items: stretch;
+    padding: 5px;
+}
+.transaction .comment {
+    grid-column: span 2
+}
