@@ -3,7 +3,7 @@
 docker-compose.yml
 Dockerfile
 dev.sh
-build.sh
+build-and-run.sh
 tail-logs.sh
 watch-build.sh
 frontend/

@@ -1,6 +1,6 @@
 # FunMoney
 
-Easy way to keep track of disposable income.
+Easy way to keep track of disposable income. Simple CRUD PWA using Go, MongoDB, and Docker, with extremely minimal frontend dependencies.
 
 ## Run
 
@@ -13,3 +13,5 @@ Easy way to keep track of disposable income.
 ```
 ./dev.sh
 ```
+
+You may need to edit HOSTNAME in `frontend/app.js` to the hostname and port the backend is running on
