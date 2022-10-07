@@ -9,9 +9,7 @@ const relativeDate = (timestamp) => {
   
     return rtf.format(daysDifference, 'day');
 }
-
-const currencySigns = {
-  "USD": "$"
-}
   
-const currencySign = currencyName => currencySigns[currencyName] || currency
+const currencySign = currencyName => ({
+  "USD": "$"
+}[currencyName] || currency)

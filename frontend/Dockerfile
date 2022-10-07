@@ -1,5 +1,5 @@
 FROM node:alpine
-RUN npm install http-server  uglify-js uglifycss -g
+RUN npm install http-server  uglify-js uglifycss html-minifier-terser -g
 EXPOSE 8080
 RUN mkdir /frontend && cd /frontend && mkdir js && mkdir css
 WORKDIR /frontend

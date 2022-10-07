@@ -1,5 +1,5 @@
 #transactions .transaction {
-    border-top: 1px solid var(--foregroundColor);
+    border-top: 1px solid var(--foregroundHsl);
     padding: 5px 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -18,9 +18,6 @@
     font-size: .75em;
     align-self: center;
 }
-#transactions .transaction .amount-wrap {
-    font-weight: bold;
-}
 #transactions .transaction .amount-value,
 #transactions .transaction .amount-currency {
     display: inline-block;
@@ -28,10 +25,11 @@
 #transactions .transaction .amount-value {
     font-size: 1.75em;
     margin-left: .35em;
+    font-weight: bold;
 }
 #transactions .transaction .amount-currency {
-    margin-top: .6em;
-    position: absolute
+    margin-top: .75em;
+    position: absolute;
 }
 
 @media screen and (min-width: 70ch) {
