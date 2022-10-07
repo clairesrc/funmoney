@@ -21,7 +21,6 @@
     /* Add transactions form */
     #addTransaction form {
         max-width: 77ch;
-        grid-template-rows: repeat(10, auto);
         grid-template-columns: repeat(12, 1fr);
         gap: .5em;
         row-gap: 1em;

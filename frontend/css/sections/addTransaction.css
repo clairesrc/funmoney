@@ -1,3 +1,9 @@
+#addTransaction .message {
+    font-weight: bold;
+    margin: 10px 0;
+    color: hsla(var(--accentHsl), 1);
+}
+
 #addTransaction form {
     display: grid;
 }
@@ -47,6 +53,7 @@
     justify-self: start;
     align-self: start;
     grid-row: 11/12;
+    cursor: pointer;
 }
 
 #addTransaction form input[type=text]:focus,

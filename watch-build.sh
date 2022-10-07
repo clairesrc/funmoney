@@ -5,7 +5,7 @@ daemon() {
 
     while [[ true ]]
     do
-        chsum2=`find ${pwd} -not -path "./.git*" -type f -exec md5sum {} \;`
+        chsum2=`find \( -path "./.git" -o -path "./db" \) ! -prune -o ${pwd} -type f -exec md5sum {} \;`
         if [[ $chsum1 != $chsum2 ]] ; then           
             if [ -n "$chsum1" ]; then
                 ENV=dev ./build-and-run.sh

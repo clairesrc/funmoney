@@ -7,3 +7,4 @@ build-and-run.sh
 tail-logs.sh
 watch-build.sh
 frontend/
+db/ 

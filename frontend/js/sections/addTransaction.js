@@ -24,7 +24,7 @@ const addTransactionOnSubmit = event => {
     }).then((response) => response.json())
         .then((result) => {
             // Update global state
-            appState.data.transactions = [result.transaction, ...appState.data.transactions]
+            appState.data.transactions = appState.data.transactions ? [result.transaction, ...appState.data.transactions] : [result.transaction]
             appState.data.balance += result.transaction.Value
 
             // Update sections

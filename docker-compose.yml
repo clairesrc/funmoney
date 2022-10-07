@@ -4,7 +4,9 @@ services:
   mongo:
     image: mongo
     container_name: mongo
-    restart: always
+    restart: unless-stopped
+    volumes:
+      - ./db:/data/db:rw
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -25,6 +27,7 @@ services:
     depends_on:
       - funmoney-frontend
     container_name: funmoney
+    restart: unless-stopped
     ports:
       - 8082:8080
     image: funmoney
@@ -33,6 +36,7 @@ services:
       - CAP=${CAP}
 
   funmoney-frontend:
+    restart: unless-stopped
     depends_on:
       - mongo
     container_name: funmoney-frontend
