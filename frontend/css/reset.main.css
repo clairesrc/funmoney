@@ -8,6 +8,11 @@ body {
   margin: auto;
   line-height: 1.75;
   font-size: 1.25em;
+}
+
+body,
+input,
+textarea {
   font-family: sans-serif;
 }
 

@@ -1,0 +1,71 @@
+#addTransaction form {
+    display: grid;
+}
+
+#addTransaction form label {
+    grid-column: 1/3;
+    padding: 10px 0 0;
+    font-size: 1em;
+    margin: 10px 0;
+    display: inline-block;
+    width: 100%;
+}
+
+#addTransaction form input[type=text],
+#addTransaction form input[type=email],
+#addTransaction form input[type=tel],
+#addTransaction form textarea {
+    grid-column: 1/3;
+    border: 2px solid hsla(var(--foregroundHsl), .5);
+    background: hsla(var(--foregroundHsl), .1);
+    color: hsla(var(--foregroundHsl), 1);
+    border-radius: 0.5em;
+    margin: 0;
+    font-weight: 400;
+    font-size: 1em;
+    padding: 0.2em;
+    display: inline-block;
+    width: 100%;
+}
+
+#addTransaction form textarea {
+    margin-bottom: 10px;
+    min-height: 80px;
+}
+
+#addTransaction form input[type=submit] {
+    border: 0;
+    border-bottom: 3px solid hsla(var(--foregroundHsl), .5);
+    background: hsla(var(--accentHsl), 1);
+    color: hsla(var(--backgroundHsl), 1);
+    border-radius: 0.5em;
+    font-size: 1.1em;
+    padding: 5px 30px 5px 30px;
+    margin: 0 0 10px 0;
+    transition: .2s;
+    font-weight: bold;
+    justify-self: start;
+    align-self: start;
+    grid-row: 11/12;
+}
+
+#addTransaction form input[type=text]:focus,
+#addTransaction form input[type=email]:focus,
+#addTransaction form input[type=tel]:focus,
+#addTransaction form textarea:focus,
+#addTransaction form input[type=text]:active,
+#addTransaction form input[type=email]:active,
+#addTransaction form input[type=tel]:active,
+#addTransaction form textarea:active {
+    outline: 0;
+    background: hsla(0, 0%, 0%, .1);
+    border-color: hsla(var(--foregroundHsl), 1);
+}
+
+#addTransaction form input[type=submit]:hover,
+#addTransaction form input[type=submit]:active {
+    position: relative;
+    background: hsla(var(--accentHoverHsl), 1);
+    color: hsla(var(--foregroundHsl), 1);
+    top: 2px;
+}

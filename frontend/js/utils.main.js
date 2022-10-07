@@ -23,3 +23,9 @@ const relativeDate = (timestamp) => {
 const currencySign = currencyName => ({
   "USD": "$"
 }[currencyName] || currencyName)
+
+const cl = (...args) => {
+  if (typeof window.env != "undefined" && window.env == "dev") {
+    console.log(...args)
+  }
+}

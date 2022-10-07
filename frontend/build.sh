@@ -23,7 +23,7 @@ MAINCSS=`awk 'FNR==1{print ""}{print}' *.main.css`
 cd sections
 SECTIONSCSS=`awk 'FNR==1{print ""}{print}' *.css`
 cd ..
-ENDCSS=`awk 'FNR==1{print ""}{print}' *.end.css > end.css`
+ENDCSS=`awk 'FNR==1{print ""}{print}' *.end.css`
 echo "$STARTCSS$MAINCSS$SECTIONSCSS$ENDCSS" > main.css
 uglifycss --max-line-len 500 --output main.min.css main.css 
 mv main.min.css .. 

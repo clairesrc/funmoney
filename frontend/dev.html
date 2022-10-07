@@ -1,4 +1,9 @@
+<div id="devMode"></div>
 <script type="text/javascript">
+    if (document.getElementById("devMode")) {
+        window.env = "dev"
+    }
+    // Live reload. @TODO: this is inconsistent sometimes. Figure it out
     lastServerStart = 0;
     setInterval(function() {
         getData("app")
@@ -7,12 +12,12 @@
                 lastServerStart = data.lastRestart
             }
             if (data.lastRestart != lastServerStart) {
-                console.log(data.lastRestart, lastServerStart)
+                cl(data.lastRestart, lastServerStart)
                 fetch(location.href)
-                .then(data => parseInt(data.status) == 200 ? setTimeout(location.reload(true), 3000) : console.log("frontend gave statuscode " + data.status + ", waiting..."))
-                .catch(error => console.log("frontend waiting to come back up:", error))
+                .then(data => parseInt(data.status) == 200 ? setTimeout(location.reload(true), 5000) : cl("frontend gave statuscode " + data.status + ", waiting..."))
+                .catch(error => cl("frontend waiting to come back up:", error))
             }
         })
-        .catch(error => console.log("error reaching backend during heartbeat", error));
-    }, 5000)
+        .catch(error => cl("error reaching backend during heartbeat", error));
+    }, 2000)
 </script>

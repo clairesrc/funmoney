@@ -4,8 +4,8 @@ buildDocker() {
 }
 
 runDockerCompose() {
-    docker-compose restart funmoney
     ENV=$ENV docker-compose up --remove-orphans -d
+    docker-compose restart funmoney
 }
 
 buildDocker && runDockerCompose

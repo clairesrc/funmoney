@@ -1,3 +1,4 @@
+window.env = "prod"
 
 /**
  * ID attribute of the HTML node to paint the app to.
@@ -9,6 +10,7 @@ const WRAPPER_ID = "main"
  */
 let appState = {
     sections: {},
+    listeners: []
 }
 
 /**
@@ -35,20 +37,39 @@ const renderSection = (name, title, sectionContent) => `
 /**
  * Add section to list of sections to fetch and render.
  */
-const addSection = (title, name, renderer) => appState.sections[name] = {title, name, renderer}
+const addSection = (title, name, renderer) => appState.sections[name] = {title, name, renderer, type: "section"}
+
+/**
+ * Add form to list of sections to fetch and render.
+ */
+const addFormSection = (title, name, renderer, onSubmit) => {
+    appState.sections[name] = { title, name, renderer, type: "form" }
+    appState.listeners.push(() => {
+        cl("adding event listener for " + name)
+        document.getElementById(name).addEventListener("submit", onSubmit)
+    })
+}
 
 /**
  * Render all sections.
  */
-const renderApp = (appData, sectionData, sections) => {
+const renderApp = (appData, sectionData, sections, listeners) => {
     wrapNode = document.getElementById(WRAPPER_ID)
     wrapNode.innerHTML = sectionData.reduce(
         (content, { name, data }) => {
-            ({ title, renderer } = sections[name])
-            return content + renderSection(name, title, renderer(appData, data))
+            cl(`rendering ${name} section`)
+            section = sections[name]
+            if (section.type == "section") {
+                ({ title, renderer } = section)
+                return content + renderSection(name, title, renderer(appData, data))
+            } else if (section.type == "form") {
+                ({ title, renderer, onSubmit } = section)
+                return content + renderSection(name, title, renderer(appData))
+            }
         },
         ''
     )
+    listeners.forEach(listener => listener())
 }
 
 /**
@@ -65,13 +86,13 @@ const getData = async name => fetch(`http://${getHostname()}/${name}${'?' + Date
 /**
  * Get app data, then get section data, then render sections. 
  */
-const main = ({ sections }) => {
-    renderApp({}, Object.keys(sections).map(section => ({ name: section, data: {} })), sections)
+const main = ({ sections, listeners }) => {
+    renderApp({}, Object.keys(sections).map(section => ({ name: section, data: {} })), sections, listeners)
     getData('app')
     .then(({data}) => 
         Promise.all(Object.keys(sections)
-            .map(key => getData(sections[key].name))
-        ).then(sectionData => renderApp(data, sectionData, sections))
+            .map(key => sections[key].type == "section" ? getData(key) : {name: key, data: {}})
+        ).then(sectionData => renderApp(data, sectionData, sections, listeners))
             .catch(console.error)
     )
 }
@@ -80,6 +101,7 @@ const main = ({ sections }) => {
  * Add sections.
  */
 addSection("My Balance", "balance", balanceRenderer)
+addFormSection("Add Transaction", "addTransaction", addTransactionRenderer, addTransactionOnSubmit)
 addSection("Recent Transactions", "transactions", transactionRenderer)
 
 /**

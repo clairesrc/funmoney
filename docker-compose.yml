@@ -23,7 +23,7 @@ services:
 
   funmoney:
     depends_on:
-      - mongo
+      - funmoney-frontend
     container_name: funmoney
     ports:
       - 8082:8080
