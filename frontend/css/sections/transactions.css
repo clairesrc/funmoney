@@ -38,19 +38,3 @@
     margin-top: .65em;
     position: absolute;
 }
-
-/* min-width should equal var(--maxWrapWidth) here but vanilla css doesnt support that yet */
-@media screen and (min-width: 70ch) {
-    #transactions .content {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 10px;
-        align-items: stretch;
-    }
-
-    #transactions .transaction,
-    #transactions .content> :first-child {
-        border: 1px solid hsla(var(--foregroundHsl), .25);
-        padding: 5px;
-    }
-}

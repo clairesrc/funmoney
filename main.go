@@ -11,7 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// Db name in data store
 const DBNAME="funmoney"
+
+// Transactions collection name in data store
 const TRANSACTIONS_COLLECTION_NAME="transactions"
 
 func main() {

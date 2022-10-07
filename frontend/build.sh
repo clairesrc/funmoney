@@ -1,19 +1,35 @@
 #!/usr/bin/env sh
-# TODO: uglification, preprocessing etc
 set -e
+cd /frontend
 
-cd js
-awk 'FNR==1{print ""}{print}' *.js > main.js
+# Concatenate + uglify js
+cd js/sections
+SECTIONSJS=`awk 'FNR==1{print ""}{print}' *.js`
+cd ..
+MAINJS=`awk 'FNR==1{print ""}{print}' *.main.js`
+echo "$SECTIONSJS$MAINJS" > main.js
 uglifyjs --compress --mangle --output main.min.js main.js
 mv main.min.js .. 
 
 cd .. 
 
+# Concatenate + uglify css. 
+# Uses filenames as a way to control the order in which they are concatenated.
 cd css 
-awk 'FNR==1{print ""}{print}' *.css > main.css 
+STARTCSS=`awk 'FNR==1{print ""}{print}' *.start.css`
+MAINCSS=`awk 'FNR==1{print ""}{print}' *.main.css` 
+cd sections
+SECTIONSCSS=`awk 'FNR==1{print ""}{print}' *.css`
+cd ..
+ENDCSS=`awk 'FNR==1{print ""}{print}' *.end.css > end.css`
+echo "$STARTCSS$MAINCSS$SECTIONSCSS$ENDCSS" > main.css
 uglifycss --max-line-len 500 --output main.min.css main.css 
 mv main.min.css .. 
 
+# Uglify index.html
 cd .. 
 html-minifier-terser --collapse-whitespace --remove-comments index.html > index.min.html
 mv index.min.html index.html
+
+# Prepare favicons
+mv favicons/* .

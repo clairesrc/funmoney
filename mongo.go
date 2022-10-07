@@ -10,11 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+/**
+ * Implements storeClient to provide an interface to MongoDB
+ */
 type mongoClient struct {
 	client *mongo.Client
 	database string
 }
 
+/**
+ * Create new instance of mongoClient
+ */
 func newMongoClient(uri, database string) (*mongoClient, error) {
 	// Create a new client and connect to the server
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
@@ -33,6 +39,9 @@ func newMongoClient(uri, database string) (*mongoClient, error) {
 	return &mongoClient{client, database}, nil
 }
 
+/**
+ * Close connection
+ */
 func (c *mongoClient) close() error {
 	if err := c.client.Disconnect(context.TODO()); err != nil {
 		return err
@@ -41,7 +50,9 @@ func (c *mongoClient) close() error {
 	return nil
 }
 
-
+/**
+ * Insert one record into MongoDB
+ */
 func (c *mongoClient) insertOne(collectionName string, document interface{}) (*mongo.InsertOneResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
@@ -53,6 +64,9 @@ func (c *mongoClient) insertOne(collectionName string, document interface{}) (*m
 	return result, nil
 }
 
+/**
+ * Insert multiple records into MongoDB
+ */
 func (c *mongoClient) insert(collectionName string, documents []interface{}) (*mongo.InsertManyResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
@@ -64,6 +78,9 @@ func (c *mongoClient) insert(collectionName string, documents []interface{}) (*m
 	return result, nil
 }
 
+/**
+ * Update multiple records in MongoDB
+ */
 func (c *mongoClient) update(collectionName string, update, filter bson.D) (*mongo.UpdateResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
@@ -75,6 +92,9 @@ func (c *mongoClient) update(collectionName string, update, filter bson.D) (*mon
 	return result, nil
 }
 
+/**
+ * Delete multiple records from MongoDB
+ */
 func (c *mongoClient) delete(collectionName string, filter bson.D) (*mongo.DeleteResult, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
@@ -86,6 +106,9 @@ func (c *mongoClient) delete(collectionName string, filter bson.D) (*mongo.Delet
 	return result, nil
 }
 
+/**
+ * Find records from MongoDB
+ */
 func (c *mongoClient) find(collectionName string, query bson.D, opts *options.FindOptions) (*mongo.Cursor, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)
@@ -101,6 +124,9 @@ func (c *mongoClient) find(collectionName string, query bson.D, opts *options.Fi
 	return cursor, nil
 }
 
+/**
+ * Get the sum value of a given column from multiple records in MongoDB
+ */
 func (c *mongoClient) aggregate(collectionName string, query bson.D) ([]bson.M, error) {
 	db := c.client.Database(c.database)
 	collection := db.Collection(collectionName)

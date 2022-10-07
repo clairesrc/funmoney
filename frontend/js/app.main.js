@@ -29,19 +29,6 @@ const balanceRenderer = (appData, balance) => `
     </p>`
 
 /**
- * Render Transactions section content.
- */
-const transactionRenderer = ({currency}, transactions) => transactions ? transactions.reduce((transactionsHTML, { Value, Timestamp, Comment, ID }) =>  `${transactionsHTML}
-<div class="transaction" data-transaction-id="${ID}">
-    <div class="amount-wrap">
-        <span class="amount-currency">${currencySign(currency)}</span><span class="amount-value">${Value ? Value : 0.00}</span>
-    </div>
-    <span class="timestamp">${Timestamp ? relativeDate(new Date(Timestamp * 1000)) : 0.00}</span>
-    <div class="comment">${Comment}</div>
-</div>
-`, '') : `Error: ${transactions}`
-
-/**
  * Render section with content.
  */
 const renderSection = (name, title, sectionContent) => `
@@ -85,12 +72,12 @@ const getData = async name => fetch(`http://${getHostname()}/${name}`)
 /**
  * Get app data, then get section data, then render sections. 
  */
-const main = appState =>
+const main = ({sections}) =>
 getData('app')
-.then(appData => 
-    Promise.all(Object.keys(appState.sections)
-        .map(key => getData(appState.sections[key].name))
-    ).then(data => renderApp(appData.data, data, appState.sections))
+.then(({data}) => 
+    Promise.all(Object.keys(sections)
+        .map(key => getData(sections[key].name))
+    ).then(sectionData => renderApp(data, sectionData, sections))
         .catch(console.error)
 )
 
