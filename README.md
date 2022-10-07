@@ -20,12 +20,16 @@ Then run:
 ./build-and-run.sh
 ```
 
+This will create a docker-compose stack on your machine set to
+
 Navigate to `http://localhost:8002` in your browser.
 
 ## Dev
 
-For Dockerized dev environment with live rebuild in a tmux shell, run:
+For a dev shell with live reload enabled and log tail pane in a tmux envionment, run:
 
 ```
 ./dev.sh
 ```
+
+You can then navigate to `http://localhost:8002` in your browser. If you're working from a remote machine, append `?hostname=host.name.ip.here:8082` to the URL so the frontend knows where to look.
