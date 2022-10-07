@@ -6,6 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+/**
+* Interface to data store.
+@TODO: This doesn't need to know anything about MongoDB. Use more appropriate type abstractions.
+*/
 type storeClient interface {
 	close() error
 	aggregate(collectionName string, query bson.D) ([]bson.M, error)

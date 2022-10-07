@@ -1,19 +1,27 @@
 * {
   box-sizing: border-box;
 }
+
 html {
-    max-width: var(--maxScreenWidth);
-    padding: 3em 1em;
-    margin: auto;
-    line-height: 1.75;
-    font-size: 1.25em;
-    font-family: sans-serif;
-  }
-  
-  h1,h2,h3,h4,h5,h6 {
-    margin: 3em 0 1em;
-  }
-  
-  p,ul,ol {
-    margin-bottom: 2em;
-  }
+  max-width: var(--maxScreenWidth);
+  padding: 1em 1em;
+  margin: auto;
+  line-height: 1.75;
+  font-size: 1.25em;
+  font-family: sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 3em 0 1em;
+}
+
+p,
+ul,
+ol {
+  margin-bottom: 2em;
+}

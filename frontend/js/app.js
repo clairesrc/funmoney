@@ -1,15 +1,36 @@
-const HOSTNAME = "192.168.193.208:8082"
+
+/**
+ * ID attribute of the HTML node to paint the app to.
+ */
 const WRAPPER_ID = "main"
 
+/**
+ * Global app state.
+ */
 let appState = {
     sections: {},
 }
 
+/**
+ * Override hostname. Useful for remote development.
+ */
+ const getHostname = () => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const hostname = urlParams.get('hostname')
+    return hostname ? hostname : "localhost:8082"
+}
+
+/**
+ * Render Balance section content.
+ */
 const balanceRenderer = (appData, balance) => `
     <p>
         Current balance: <span class="balance-figure">${balance ? balance : 0.00}</span>
     </p>`
 
+/**
+ * Render Transactions section content.
+ */
 const transactionRenderer = ({currency}, transactions) => transactions ? transactions.reduce((transactionsHTML, { Value, Timestamp, Comment, ID }) =>  `${transactionsHTML}
 <div class="transaction" data-transaction-id="${ID}">
     <div class="amount-wrap">
@@ -20,6 +41,9 @@ const transactionRenderer = ({currency}, transactions) => transactions ? transac
 </div>
 `, '') : `Error: ${transactions}`
 
+/**
+ * Render section with content.
+ */
 const renderSection = (name, title, sectionContent) => `
     <section id="${name}">
         <h1>${title}</h1>
@@ -29,8 +53,14 @@ const renderSection = (name, title, sectionContent) => `
     </section>
     `
 
+/**
+ * Add section to list of sections to fetch and render.
+ */
 const addSection = (title, name, renderer) => appState.sections[name] = {title, name, renderer}
 
+/**
+ * Render all sections.
+ */
 const renderApp = (appData, sectionData, sections) => {
     wrapNode = document.getElementById(WRAPPER_ID)
     wrapNode.innerHTML = sectionData.reduce(
@@ -42,12 +72,19 @@ const renderApp = (appData, sectionData, sections) => {
     )
 }
 
-const getData = async name => fetch(`http://${HOSTNAME}/${name}`)
+/**
+ * GET data from API endpoint.
+ * Assumes section name = endpoint = response top-level key
+ */
+const getData = async name => fetch(`http://${getHostname()}/${name}`)
     .then(res => res.json())
     .then(data => {
         return { name, "data": data[name] }
     })
 
+/**
+ * Get app data, then get section data, then render sections. 
+ */
 const main = appState =>
 getData('app')
 .then(appData => 
@@ -57,7 +94,13 @@ getData('app')
         .catch(console.error)
 )
 
+/** 
+ * Add sections.
+ */
 addSection("My Balance", "balance", balanceRenderer)
 addSection("Recent Transactions", "transactions", transactionRenderer)
 
+/**
+ * Run app.
+ */
 main(appState)
