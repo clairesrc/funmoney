@@ -7,8 +7,9 @@ cd /frontend
 cd js/sections
 SECTIONSJS=`awk 'FNR==1{print ""}{print}' *.js`
 cd ..
-MAINJS=`awk 'FNR==1{print ""}{print}' *.main.js`
-echo "$SECTIONSJS$MAINJS" > main.js
+UTILSJS=`awk 'FNR==1{print ""}{print}' utils.main.js`
+MAINJS=`awk 'FNR==1{print ""}{print}' app.main.js`
+echo "$UTILSJS$SECTIONSJS$MAINJS" > main.js
 uglifyjs --compress --mangle --output main.min.js main.js
 mv main.min.js .. 
 

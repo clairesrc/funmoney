@@ -22,4 +22,4 @@ const relativeDate = (timestamp) => {
  */
 const currencySign = currencyName => ({
   "USD": "$"
-}[currencyName] || currency)
+}[currencyName] || currencyName)

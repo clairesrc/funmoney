@@ -65,14 +65,16 @@ const getData = async name => fetch(`http://${getHostname()}/${name}${'?' + Date
 /**
  * Get app data, then get section data, then render sections. 
  */
-const main = ({sections}) =>
-getData('app')
-.then(({data}) => 
-    Promise.all(Object.keys(sections)
-        .map(key => getData(sections[key].name))
-    ).then(sectionData => renderApp(data, sectionData, sections))
-        .catch(console.error)
-)
+const main = ({ sections }) => {
+    renderApp({}, Object.keys(sections).map(section => ({ name: section, data: {} })), sections)
+    getData('app')
+    .then(({data}) => 
+        Promise.all(Object.keys(sections)
+            .map(key => getData(sections[key].name))
+        ).then(sectionData => renderApp(data, sectionData, sections))
+            .catch(console.error)
+    )
+}
 
 /** 
  * Add sections.
