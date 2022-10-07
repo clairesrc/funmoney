@@ -1,0 +1,10 @@
+:root
+{
+  --maxWrapWidth: 70ch;
+
+  --backgroundHsl: 263, 6%, 43%;
+  --accentHoverHsl: 348, 25%, 61%;
+  --accentHsl: 358, 60%, 75%;
+  --headingHsl: 12, 100%, 82%;
+  --foregroundHsl: 21, 100%, 85%;
+}

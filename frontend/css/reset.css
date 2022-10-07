@@ -2,12 +2,11 @@
   box-sizing: border-box;
 }
 html {
-    max-width: 70ch;
+    max-width: var(--maxScreenWidth);
     padding: 3em 1em;
     margin: auto;
     line-height: 1.75;
     font-size: 1.25em;
-    color: #1d1d1d;
     font-family: sans-serif;
   }
   

@@ -37,5 +37,5 @@ services:
       - mongo
     container_name: funmoney-frontend
     ports:
-      - 8002:8000
+      - 8002:8080
     image: funmoney-frontend

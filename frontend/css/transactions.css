@@ -1,0 +1,52 @@
+#transactions .transaction {
+    border-top: 1px solid var(--foregroundColor);
+    padding: 5px 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    align-items: stretch;
+}
+#transactions .transaction .comment {
+    grid-column: span 2
+}
+#transactions .content > :first-child {
+    padding-top: 0;
+    border-top: 0;
+}
+#transactions .transaction .timestamp {
+    color: hsla(var(--foregroundHsl), .5);
+    font-size: .75em;
+    align-self: center;
+}
+#transactions .transaction .amount-wrap {
+    font-weight: bold;
+}
+#transactions .transaction .amount-value,
+#transactions .transaction .amount-currency {
+    display: inline-block;
+}
+#transactions .transaction .amount-value {
+    font-size: 1.75em;
+    margin-left: .35em;
+}
+#transactions .transaction .amount-currency {
+    margin-top: .6em;
+    position: absolute
+}
+
+@media screen and (min-width: 70ch) {
+    #transactions .content {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        align-items: stretch;
+    }
+    #transactions .transaction,
+    #transactions .content > :first-child {
+        border: 1px solid hsla(var(--foregroundHsl), .25);
+        padding: 5px;
+    }
+    #transactions .transaction .timestamp {
+        text-align: right
+    }
+}

@@ -45,6 +45,15 @@ func main() {
 	corsconfig.AllowAllOrigins = true
 	r.Use(cors.New(corsconfig))
 
+	r.GET("/app", func(c *gin.Context) {
+		appValues := map[string]interface{}{
+			"appName": "FunMoney",
+			"currency": currency,
+			"cap": cap,
+		}
+		c.JSON(http.StatusOK, gin.H{"app": appValues})
+	})
+
 	r.GET("/transactions", func(c *gin.Context) {
 		transactions, err := transactionsClient.Read(bson.D{}, 12)
 		if err!= nil {
