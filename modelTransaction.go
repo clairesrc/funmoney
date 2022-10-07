@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -24,7 +25,7 @@ type transactionRecord struct {
     ID      *primitive.ObjectID `json:"ID" bson:"_id,omitempty"`
     Comment    string `bson:"comment,omitempty"`
     Type    string `bson:"type,omitempty"`
-    Timestamp string `bson:"timestamp,omitempty"`
+    Timestamp int `bson:"timestamp,omitempty"`
 	Value float64 `bson:"value,omitempty"`
 }
 
@@ -45,13 +46,13 @@ func newTransactionsModel(client storeClient) *transactions {
  *	  @return result	   		The result of the operation.
  *    @return errors		   	An error if an error occurred.
  */
-func (t *transactions) Create(transaction transactionRecord) (interface{}, error) {
+func (t *transactions) Create(transaction transactionRecord) (*mongo.InsertOneResult, error) {
 	result, err := t.client.insertOne(TRANSACTIONS_COLLECTION_NAME, transaction)
 	if err!= nil {
 		return nil, fmt.Errorf("Can't add transaction record:\n%w", err)
 	}
-	
-	return result.InsertedID, nil
+
+	return result, nil
 }
 
 /**
@@ -68,6 +69,7 @@ func (t *transactions) Read(query bson.D, limit int) ([]transactionRecord, error
 	if limit > 0 {
 		opts = options.Find().SetLimit(int64(limit))
 	}
+	opts = opts.SetSort(bson.D{{Key: "_id", Value: -1}})
 	result, err := t.client.find(TRANSACTIONS_COLLECTION_NAME, query, opts)
     if err!= nil {
         return nil, fmt.Errorf("Can't find transaction record:\n%w", err)

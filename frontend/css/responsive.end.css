@@ -14,9 +14,9 @@
         padding-top: 0;
     }
 
-    /* #transactions .content> :first-child {
+    #transactions .content> :first-child:not(.empty) {
         border-top: 1px solid hsla(var(--foregroundHsl), .25);
-    } */
+    }
 
     /* Add transactions form */
     #addTransaction form {

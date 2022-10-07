@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Db name in data store
@@ -84,6 +85,28 @@ func main() {
 
 		c.JSON(http.StatusOK, gin.H{"balance": 0})
 	})
+
+    r.POST("/transaction", func(c *gin.Context) {
+        var transaction transactionRecord
+        err := c.BindJSON(&transaction)
+		if err!= nil {
+            reportError(c, err)
+            return
+		}
+
+		transaction.Timestamp = int(time.Now().Unix())
+
+		result, err := transactionsClient.Create(transaction)
+		if err!= nil {
+            reportError(c, err)
+            return
+		}
+
+		transactionID := result.InsertedID.(primitive.ObjectID)
+		transaction.ID = &transactionID
+
+        c.JSON(200, gin.H{"transaction": transaction}) // Your custom response here
+    })
 
 	_ = r.Run()
 }

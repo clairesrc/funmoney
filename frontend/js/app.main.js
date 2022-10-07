@@ -10,7 +10,8 @@ const WRAPPER_ID = "main"
  */
 let appState = {
     sections: {},
-    listeners: []
+    listeners: [],
+    data: {}
 }
 
 /**
@@ -37,7 +38,7 @@ const renderSection = (name, title, sectionContent) => `
 /**
  * Add section to list of sections to fetch and render.
  */
-const addSection = (title, name, renderer) => appState.sections[name] = {title, name, renderer, type: "section"}
+const addSection = (title, name, renderer) => appState.sections[name] = { title, name, renderer, type: "section" }
 
 /**
  * Add form to list of sections to fetch and render.
@@ -57,8 +58,9 @@ const renderApp = (appData, sectionData, sections, listeners) => {
     wrapNode = document.getElementById(WRAPPER_ID)
     wrapNode.innerHTML = sectionData.reduce(
         (content, { name, data }) => {
+            // Render section
             cl(`rendering ${name} section`)
-            section = sections[name]
+            const section = sections[name]
             if (section.type == "section") {
                 ({ title, renderer } = section)
                 return content + renderSection(name, title, renderer(appData, data))
@@ -80,6 +82,9 @@ const renderApp = (appData, sectionData, sections, listeners) => {
 const getData = async name => fetch(`http://${getHostname()}/${name}${'?' + Date.now()}`)
     .then(res => res.json())
     .then(data => {
+        // Add data to global dictionary
+        appState.data[name] = data[name]
+
         return { name, "data": data[name] }
     })
 
@@ -89,12 +94,12 @@ const getData = async name => fetch(`http://${getHostname()}/${name}${'?' + Date
 const main = ({ sections, listeners }) => {
     renderApp({}, Object.keys(sections).map(section => ({ name: section, data: {} })), sections, listeners)
     getData('app')
-    .then(({data}) => 
-        Promise.all(Object.keys(sections)
-            .map(key => sections[key].type == "section" ? getData(key) : {name: key, data: {}})
-        ).then(sectionData => renderApp(data, sectionData, sections, listeners))
-            .catch(console.error)
-    )
+        .then(({ data }) =>
+            Promise.all(Object.keys(sections)
+                .map(key => sections[key].type == "section" ? getData(key) : { name: key, data: {} })
+            ).then(sectionData => renderApp(data, sectionData, sections, listeners))
+                .catch(console.error)
+        )
 }
 
 /** 
