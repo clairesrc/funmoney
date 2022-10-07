@@ -9,4 +9,4 @@
      <span class="timestamp">${Timestamp ? relativeDate(new Date(Timestamp * 1000)) : 0.00}</span>
      <div class="comment">${Comment}</div>
  </div>
- `, '') : `Error: ${transactions}`
+ `, '') : `<div class="empty" data-value="${transactions}">No transactions yet!</div>`

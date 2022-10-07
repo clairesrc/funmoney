@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    lastServerStart = 0;
+    setInterval(function() {
+        getData("app")
+        .then(({data}) => {
+            if (lastServerStart == 0) {
+                lastServerStart = data.lastRestart
+            }
+            if (data.lastRestart != lastServerStart) {
+                console.log(data.lastRestart, lastServerStart)
+                fetch(location.href)
+                .then(data => parseInt(data.status) == 200 ? location.reload() : console.log("frontend gave statuscode " + data.status + ", waiting..."))
+                .catch(error => console.log("waiting for frontend to come back up, err:", error))
+            }
+        })
+        .catch(error => console.log("error reaching backend during heartbeat", error));
+    }, 5000)
+</script>

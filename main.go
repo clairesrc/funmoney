@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -47,12 +48,14 @@ func main() {
 	corsconfig := cors.DefaultConfig()
 	corsconfig.AllowAllOrigins = true
 	r.Use(cors.New(corsconfig))
+	startTimestamp := time.Now().Unix()
 
 	r.GET("/app", func(c *gin.Context) {
 		appValues := map[string]interface{}{
 			"appName": "FunMoney",
 			"currency": currency,
 			"cap": cap,
+			"lastRestart": startTimestamp,
 		}
 		c.JSON(http.StatusOK, gin.H{"app": appValues})
 	})
@@ -74,7 +77,12 @@ func main() {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"balance": sum[0]["value"]})
+		if len(sum) > 0 {
+			c.JSON(http.StatusOK, gin.H{"balance": sum[0]["value"]})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"balance": 0})
 	})
 
 	_ = r.Run()

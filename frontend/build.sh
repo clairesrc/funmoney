@@ -3,6 +3,7 @@ set -e
 cd /frontend
 
 # Concatenate + uglify js
+# Sections render functions followed by main app runtime.
 cd js/sections
 SECTIONSJS=`awk 'FNR==1{print ""}{print}' *.js`
 cd ..
@@ -30,6 +31,15 @@ mv main.min.css ..
 cd .. 
 html-minifier-terser --collapse-whitespace --remove-comments index.html > index.min.html
 mv index.min.html index.html
+
+# Add live-reload if dev mode enabled
+if [[ "$ENV" == "dev" ]]; then
+    echo "Dev mode enabled, adding dev snippet to index.html"
+    INDEXCONTENT=`cat index.html`
+    DEVPOSTFIX=`cat dev.html`
+
+    echo "$INDEXCONTENT$DEVPOSTFIX" > index.html
+fi
 
 # Prepare favicons
 mv favicons/* .

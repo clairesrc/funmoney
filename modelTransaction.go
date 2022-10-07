@@ -100,5 +100,6 @@ func (t *transactions) Sum(query bson.D) ([]bson.M, error) {
         return nil, fmt.Errorf("Can't find transaction record:\n%w", err)
     }
 
+
 	return result, nil
 }

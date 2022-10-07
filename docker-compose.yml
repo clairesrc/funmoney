@@ -39,3 +39,5 @@ services:
     ports:
       - 8002:8080
     image: funmoney-frontend
+    environment:
+      - ENV=${ENV}

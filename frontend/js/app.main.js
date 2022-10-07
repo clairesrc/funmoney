@@ -14,19 +14,11 @@ let appState = {
 /**
  * Override hostname. Useful for remote development.
  */
- const getHostname = () => {
+const getHostname = () => {
     const urlParams = new URLSearchParams(window.location.search)
     const hostname = urlParams.get('hostname')
     return hostname ? hostname : "localhost:8082"
 }
-
-/**
- * Render Balance section content.
- */
-const balanceRenderer = (appData, balance) => `
-    <p>
-        Current balance: <span class="balance-figure">${balance ? balance : 0.00}</span>
-    </p>`
 
 /**
  * Render section with content.
@@ -61,9 +53,10 @@ const renderApp = (appData, sectionData, sections) => {
 
 /**
  * GET data from API endpoint.
- * Assumes section name = endpoint = response top-level key
+ * Assumes section name = endpoint = response top-level key.
+ * Appends a timestamp cache bust.
  */
-const getData = async name => fetch(`http://${getHostname()}/${name}`)
+const getData = async name => fetch(`http://${getHostname()}/${name}${'?' + Date.now()}`)
     .then(res => res.json())
     .then(data => {
         return { name, "data": data[name] }
