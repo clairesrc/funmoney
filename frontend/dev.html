@@ -9,8 +9,8 @@
             if (data.lastRestart != lastServerStart) {
                 console.log(data.lastRestart, lastServerStart)
                 fetch(location.href)
-                .then(data => parseInt(data.status) == 200 ? location.reload() : console.log("frontend gave statuscode " + data.status + ", waiting..."))
-                .catch(error => console.log("error checking for frontend to come back up:", error))
+                .then(data => parseInt(data.status) == 200 ? setTimeout(location.reload(true), 3000) : console.log("frontend gave statuscode " + data.status + ", waiting..."))
+                .catch(error => console.log("frontend waiting to come back up:", error))
             }
         })
         .catch(error => console.log("error reaching backend during heartbeat", error));

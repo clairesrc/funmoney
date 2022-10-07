@@ -3,5 +3,5 @@
  */
 const balanceRenderer = (appData, balance) => `
     <p>
-        Current balance: <span class="balance-figure">${balance ? balance : 0.00}</span>
+        Current balance: <span class="balance-currency">${currencySign(appData.currency)}</span><span class="balance-value">${balance ? balance : 0.00}</span><span class="balance-out-of">/</span><span class="balance-currency">${currencySign(appData.currency)}</span><span class="balance-value">${appData.cap ? appData.cap : 0.00}</span>
     </p>`
