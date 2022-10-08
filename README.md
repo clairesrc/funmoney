@@ -11,10 +11,17 @@ Create `.env` and set these variables in it:
 ```
 CAP=200
 CURRENCY=USD
+ENV=dev
+MONGODB_CONNECTION_URI="mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority"
 ```
 
 `CAP` is the monthly limit of disposable income you can spend per month.
+
 `CURRENCY` is the currency you'd like to track.
+
+`ENV` controls log levels and live-reload. Set to `prod` to disable live-reload polling and frontend logging.
+
+`MONGODB_CONNECTION_URI` points to the MongoDB instance. Can be left default if you're just going with the instance included in `docker-compose.yml`.
 
 Then run:
 

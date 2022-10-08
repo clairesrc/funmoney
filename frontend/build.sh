@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 set -e
-cd frontend
 
 # Concatenate + uglify js
 # Sections render functions followed by main app runtime.

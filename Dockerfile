@@ -1,5 +1,5 @@
 FROM golang:latest
-ENV CAP, CURRENCY
+ENV CAP, CURRENCY, MONGODB_CONNECTION_URI
 RUN mkdir /funmoney && cd /funmoney
 WORKDIR /funmoney
 COPY go.mod ./

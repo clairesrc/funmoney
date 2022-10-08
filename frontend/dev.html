@@ -3,7 +3,8 @@
     if (document.getElementById("devMode")) {
         window.env = "dev"
     }
-    // Live reload. @TODO: this is inconsistent sometimes. Figure it out
+    // Live reload
+    // @TODO: this should be a push-based WebSockets system, not just polling an endpoint every few seconds.
     lastServerStart = 0;
     setInterval(function() {
         getData("app")

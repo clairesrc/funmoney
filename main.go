@@ -20,6 +20,11 @@ const DBNAME="funmoney"
 const TRANSACTIONS_COLLECTION_NAME="transactions"
 
 func main() {
+	var MONGODB_CONNECTION_URI = os.Getenv("MONGODB_CONNECTION_URI")
+	if MONGODB_CONNECTION_URI == "" {
+		MONGODB_CONNECTION_URI = "mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority"
+	}
+	
 	var cap = os.Getenv("CAP")
 	if cap == "" {
       cap = "100"
@@ -33,7 +38,7 @@ func main() {
 	  log.Fatal("Error loading .env file")
 	}
 
-	store, err := newMongoClient("mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority", DBNAME)
+	store, err := newMongoClient(MONGODB_CONNECTION_URI, DBNAME)
 	if err != nil {
 		panic(err)
 	}
