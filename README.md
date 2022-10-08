@@ -1,5 +1,7 @@
 # FunMoney
 
+[![Go](https://github.com/clairesrc/funmoney/actions/workflows/go.yml/badge.svg)](https://github.com/clairesrc/funmoney/actions/workflows/go.yml) [![Deploy static content to Pages](https://github.com/clairesrc/funmoney/actions/workflows/build-frontend.yml/badge.svg)](https://github.com/clairesrc/funmoney/actions/workflows/build-frontend.yml)
+
 Easy way to keep track of disposable income. Simple CRUD PWA using Go, MongoDB, and Docker, and vanilla JS frontend. This is a work in progress that is not yet feature-complete. I wrote this mainly to learn the Go MongoDB client, but also for use as a tenplate for small CRUD PWA apps. The data store can easily be swapped to something else, the build process is a simple shell script and everything is intended to be very easy to hack on.
 
 ## Run
