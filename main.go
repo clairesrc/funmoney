@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -24,7 +26,7 @@ func main() {
 	if MONGODB_CONNECTION_URI == "" {
 		MONGODB_CONNECTION_URI = "mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority"
 	}
-	
+
 	var cap = os.Getenv("CAP")
 	if cap == "" {
       cap = "100"
@@ -84,7 +86,12 @@ func main() {
 		}
 
 		if len(sum) > 0 {
-			c.JSON(http.StatusOK, gin.H{"balance": sum[0]["value"]})
+			balance, ok := sum[0]["value"].(float64)
+			if !ok {
+				reportError(c, fmt.Errorf("invalid balance %s", sum[0]["value"]))
+			}
+			
+			c.JSON(http.StatusOK, gin.H{"balance": math.Round(balance*100)/100})
 			return
 		}
 

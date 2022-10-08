@@ -23,6 +23,7 @@ const addTransactionOnSubmit = event => {
         })
     }).then((response) => response.json())
         .then((result) => {
+            // @TODO: manually updating global state and re-rendering sections is untenable! figure out a cleaner way to handle this.
             // Update global state
             appState.data.transactions = appState.data.transactions ? [result.transaction, ...appState.data.transactions] : [result.transaction]
             appState.data.balance += result.transaction.Value
