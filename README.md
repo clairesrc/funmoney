@@ -29,7 +29,7 @@ Then run:
 ./build-and-run.sh
 ```
 
-This will create a docker-compose stack on your machine set to
+This will create and run a docker-compose stack on your machine.
 
 Navigate to `http://localhost:8002` in your browser.
 
