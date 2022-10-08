@@ -33,14 +33,14 @@ jobs:
       - name: Get deps
         run: npm install http-server  uglify-js uglifycss html-minifier-terser -g
       - name: Build frontend
-        run: cd frontend && ./build.sh && mv./* ..
+        run: ./frontend/build.sh && mv frontend/* .
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: '.'
+          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
