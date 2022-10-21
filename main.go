@@ -16,10 +16,10 @@ import (
 )
 
 // Db name in data store
-const DBNAME="funmoney"
+const DBNAME = "funmoney"
 
 // Transactions collection name in data store
-const TRANSACTIONS_COLLECTION_NAME="transactions"
+const TRANSACTIONS_COLLECTION_NAME = "transactions"
 
 func main() {
 	var MONGODB_CONNECTION_URI = os.Getenv("MONGODB_CONNECTION_URI")
@@ -29,15 +29,15 @@ func main() {
 
 	var cap = os.Getenv("CAP")
 	if cap == "" {
-      cap = "100"
+		cap = "100"
 	}
 	var currency = os.Getenv("CURRENCY")
 	if currency == "" {
-		currency="USD"
+		currency = "USD"
 	}
 	err := godotenv.Load(".config.env")
 	if err != nil {
-	  log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file")
 	}
 
 	store, err := newMongoClient(MONGODB_CONNECTION_URI, DBNAME)
@@ -52,7 +52,7 @@ func main() {
 	transactionsClient := newTransactionsModel(store)
 
 	r := gin.Default()
-	
+
 	corsconfig := cors.DefaultConfig()
 	corsconfig.AllowAllOrigins = true
 	r.Use(cors.New(corsconfig))
@@ -60,9 +60,9 @@ func main() {
 
 	r.GET("/app", func(c *gin.Context) {
 		appValues := map[string]interface{}{
-			"appName": "FunMoney",
-			"currency": currency,
-			"cap": cap,
+			"appName":     "FunMoney",
+			"currency":    currency,
+			"cap":         cap,
 			"lastRestart": startTimestamp,
 		}
 		c.JSON(http.StatusOK, gin.H{"app": appValues})
@@ -70,7 +70,7 @@ func main() {
 
 	r.GET("/transactions", func(c *gin.Context) {
 		transactions, err := transactionsClient.Read(bson.D{}, 12)
-		if err!= nil {
+		if err != nil {
 			reportError(c, err)
 			return
 		}
@@ -80,7 +80,7 @@ func main() {
 
 	r.GET("/balance", func(c *gin.Context) {
 		sum, err := transactionsClient.Sum(bson.D{{Key: "value", Value: "$value"}})
-		if err!= nil {
+		if err != nil {
 			reportError(c, err)
 			return
 		}
@@ -90,35 +90,35 @@ func main() {
 			if !ok {
 				reportError(c, fmt.Errorf("invalid balance %s", sum[0]["value"]))
 			}
-			
-			c.JSON(http.StatusOK, gin.H{"balance": math.Round(balance*100)/100})
+
+			c.JSON(http.StatusOK, gin.H{"balance": math.Round(balance*100) / 100})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{"balance": 0})
 	})
 
-    r.POST("/transaction", func(c *gin.Context) {
-        var transaction transactionRecord
-        err := c.BindJSON(&transaction)
-		if err!= nil {
-            reportError(c, err)
-            return
+	r.POST("/transaction", func(c *gin.Context) {
+		var transaction transactionRecord
+		err := c.BindJSON(&transaction)
+		if err != nil {
+			reportError(c, err)
+			return
 		}
 
 		transaction.Timestamp = int(time.Now().Unix())
 
 		result, err := transactionsClient.Create(transaction)
-		if err!= nil {
-            reportError(c, err)
-            return
+		if err != nil {
+			reportError(c, err)
+			return
 		}
 
 		transactionID := result.InsertedID.(primitive.ObjectID)
 		transaction.ID = &transactionID
 
-        c.JSON(200, gin.H{"transaction": transaction}) // Your custom response here
-    })
+		c.JSON(200, gin.H{"transaction": transaction})
+	})
 
 	_ = r.Run()
 }
